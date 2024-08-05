@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+import { Pool } from 'pg';
+import * as fs from 'fs';
+import { join } from 'path';
 import { WalletModule } from './modules/wallet/wallet.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './configs/app.config';
-import postgresConfig from './configs/postgres.config';
+import postgresConfig, { IPostgresConfig } from './configs/postgres.config';
 import { configValidator } from './configs/validator';
 
 @Module({
@@ -16,6 +19,36 @@ import { configValidator } from './configs/validator';
     WalletModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: 'PG',
+      useFactory: async (configService: ConfigService) => {
+        try {
+          const postgresConfig = configService.get<IPostgresConfig>('postgres');
+          const pool = new Pool({
+            host: postgresConfig.host,
+            user: postgresConfig.user,
+            password: postgresConfig.password,
+            database: postgresConfig.database_name,
+            port: postgresConfig.port,
+          });
+
+          const poolClient = await pool.connect();
+
+          const sql = fs
+            .readFileSync(join(__dirname, 'migration.sql'))
+            .toString();
+          await poolClient.query(sql);
+          poolClient.release();
+
+          return pool;
+        } catch (e) {
+          throw e;
+        }
+      },
+      inject: [ConfigService],
+    },
+  ],
+  exports: ['PG'],
 })
 export class AppModule {}
