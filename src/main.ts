@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { WalletModule } from './modules/wallet/wallet.module';
+import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IAppConfig } from './configs/app.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(WalletModule);
+  const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
