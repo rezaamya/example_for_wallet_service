@@ -50,4 +50,26 @@ export class TransactionModel {
       );
     }
   }
+
+  public async getTotalAmountBetweenDates(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    try {
+      //TODO:
+      // Should we remove 'ABS' from following query?
+      const result = await this.Pool.query(
+        `SELECT SUM(ABS(amount)) as total_amount FROM transactions WHERE created_at >= $1 AND created_at < $2;`,
+        [startDate, endDate],
+      );
+      return result.rows[0].total_amount || 0;
+    } catch (e) {
+      handleError(
+        e,
+        this.logger,
+        `getTotalAmountBetweenDates failed with following error: ${e.message}`,
+        'EXC_Wallet_TransactionModel_GetTotalAmountBetweenDates_Unknown',
+      );
+    }
+  }
 }

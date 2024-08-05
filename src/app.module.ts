@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './configs/app.config';
 import postgresConfig, { IPostgresConfig } from './configs/postgres.config';
 import { configValidator } from './configs/validator';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Global()
 @Module({
@@ -17,6 +18,7 @@ import { configValidator } from './configs/validator';
       load: [appConfig, postgresConfig],
       validate: configValidator,
     }),
+    ScheduleModule.forRoot(),
     WalletModule,
   ],
   controllers: [],
