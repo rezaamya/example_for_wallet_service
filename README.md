@@ -1,73 +1,194 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Wallet Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a wallet service application built with Node.js and PostgreSQL, containerized using Docker.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Run Project using docker compose (solution 1)
 
-## Description
+## Prerequisites
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Before you begin, ensure you have the following installed on your system:
+- Docker
+- Docker Compose
 
-## Installation
+## Getting Started
 
-```bash
-$ npm install
-```
+Follow these steps to get your development environment running:
 
-## Running the app
+1. **Clone the repository**
 
-```bash
-# development
-$ npm run start
+   ```bash
+   git clone https://github.com/rezaamya/example_for_wallet_service.git
+   cd example_for_wallet_service
+   ```
 
-# watch mode
-$ npm run start:dev
+2. **Set up environment variables**
 
-# production mode
-$ npm run start:prod
-```
+   Create a `.env` file in the root directory of the project and add the following content:
 
-## Test
+   ```env
+   # Application
+   APP_PORT=4000
 
-```bash
-# unit tests
-$ npm run test
+   # Database
+   POSTGRES_HOST=wallet-service-db
+   POSTGRES_PORT=5432
+   POSTGRES_USER=walletuser
+   POSTGRES_PASSWORD=walletpassword
+   POSTGRES_DB=walletdb
+   ```
 
-# e2e tests
-$ npm run test:e2e
+   Feel free to change the values as needed, but ensure that `POSTGRES_HOST` matches the name of your database service in the Docker Compose file.
 
-# test coverage
-$ npm run test:cov
-```
+3. **Build and run the containers**
 
-## Support
+   Use Docker Compose to build and start the containers:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+   ```bash
+   docker-compose up --build
+   ```
 
-## Stay in touch
+   This command will build the Docker images and start the containers. The `--build` flag ensures that Docker rebuilds the images if there are any changes.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+4. **Accessing the application**
 
-## License
+   Once the containers are up and running, you can access the application at:
 
-Nest is [MIT licensed](LICENSE).
+   ```
+   http://localhost:4000
+   ```
+
+   The PostgreSQL database will be accessible on your host machine at `localhost:5436`.
+
+5. **Stopping the application**
+
+   To stop the application and remove the containers, use:
+
+   ```bash
+   docker-compose down
+   ```
+
+## Development
+
+For development purposes, you can use the following commands:
+
+- To rebuild the containers: `docker-compose up --build`
+- To start the containers in detached mode: `docker-compose up -d`
+- To view logs: `docker-compose logs -f`
+- To stop the containers without removing them: `docker-compose stop`
+- To remove stopped containers: `docker-compose rm`
+
+# Run using node.JS (solution 2)
+
+If you want to run the project without using `docker-compose`, use following steps:
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed on your system:
+- Node.js (version 14 or later)
+- npm (usually comes with Node.js)
+- Docker (for running the PostgreSQL container)
+
+## Getting Started
+
+Follow these steps to set up and run the project:
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/rezaamya/example_for_wallet_service.git
+   cd example_for_wallet_service
+   ```
+
+2. **Set up environment variables**
+
+   Create a `.env` file in the root directory of the project and add the following content:
+
+   ```env
+   # Application
+   APP_PORT=4000
+
+   # Database
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=5436
+   POSTGRES_USER=walletuser
+   POSTGRES_PASSWORD=walletpassword
+   POSTGRES_DB=walletdb
+   ```
+
+   Adjust these values if your PostgreSQL container uses different settings.
+
+3. **Install dependencies**
+
+   Install the required npm packages:
+
+   ```bash
+   npm install
+   ```
+
+4. **Ensure PostgreSQL is running**
+
+   Make sure your PostgreSQL container is running. If not, start it using:
+
+   ```bash
+   docker run -d --name wallet-postgres -e POSTGRES_USER=walletuser -e POSTGRES_PASSWORD=walletpassword -e POSTGRES_DB=walletdb -p 5436:5432 postgres:12.19-alpine3.20
+   ```
+
+   This command starts a PostgreSQL container with the settings specified in your `.env` file.
+
+5. **Run the application**
+
+   Start the application in development mode:
+
+   ```bash
+   npm run start:dev
+   ```
+
+   For production mode:
+
+   ```bash
+   npm run build
+   npm run start:prod
+   ```
+
+   The application will be accessible at `http://localhost:4000`.
+
+6. **Running tests**
+
+   To run the unit tests:
+
+   ```bash
+   npm run test
+   ```
+
+   To run end-to-end tests:
+
+   ```bash
+   npm run test:e2e
+   ```
+
+   To run tests with coverage:
+
+   ```bash
+   npm run test:cov
+   ```
+
+## API Endpoints
+
+GET Balance:
+
+   ```bash
+   curl --location 'localhost:4000/v1/balance?user_id=1'
+   ```
+
+Add/Subtract Money:
+
+   ```bash
+   curl --location 'localhost:4000/v1/money'  --header 'Content-Type: application/json'  --data '{ "user_id": 1, "amount": 50 }'
+   ```
+
+## Additional Notes
+
+- Ensure that the PostgreSQL container is running before starting the application.
+- The application uses port 4000 by default. Ensure this port is free on your system.
+- For any changes in the database configuration, update both the `.env` file and the PostgreSQL container settings.
+
