@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { Pool } from 'pg';
 import * as fs from 'fs';
 import { join } from 'path';
@@ -8,6 +8,7 @@ import appConfig from './configs/app.config';
 import postgresConfig, { IPostgresConfig } from './configs/postgres.config';
 import { configValidator } from './configs/validator';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({

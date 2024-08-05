@@ -1,7 +1,13 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, Validate } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class WalletBalanceRequestQueryParamsDto {
   @IsNotEmpty()
+  @Validate((value: string): boolean => {
+    const parsedValue = parseInt(value, 10);
+    return !isNaN(parsedValue);
+  })
+  @Transform(({ value }) => parseInt(value))
   user_id: number;
 }
 
@@ -11,8 +17,11 @@ export class WalletBalanceResponseDto {
 }
 
 export class WalletMoneyRequestDto {
+  @IsNotEmpty()
   @IsNumber()
   user_id: number;
+
+  @IsNotEmpty()
   @IsNumber()
   amount: number;
 }
