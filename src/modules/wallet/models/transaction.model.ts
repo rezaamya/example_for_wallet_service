@@ -1,9 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Pool } from 'pg';
 import { Transaction } from '../types/wallet.type';
+import { handleError } from '../../../exceptions/microservice.excepction';
 
 @Injectable()
 export class TransactionModel {
+  private readonly logger = new Logger(TransactionModel.name);
+
   constructor(@Inject('PG') private readonly Pool: Pool) {}
 
   public async findLatestByUserId(user_id: number): Promise<Transaction> {
@@ -12,11 +15,15 @@ export class TransactionModel {
         `select * from transactions where user_id = $1 order by created_at DESC LIMIT 1;`,
         [user_id],
       );
+
       return result.rows[0];
     } catch (e) {
-      //Todo
-      // Handle Error
-      throw new Error('EXC_Wallet_TransactionModel_FindLatestByUserId_Unknown');
+      handleError(
+        e,
+        this.logger,
+        `findLatestByUserId failed with following error: ${e.message}`,
+        'EXC_Wallet_TransactionModel_FindLatestByUserId_Unknown',
+      );
     }
   }
 
@@ -35,9 +42,12 @@ export class TransactionModel {
       );
       return result.rows[0];
     } catch (e) {
-      //Todo
-      // Handle Error
-      throw new Error('EXC_Wallet_TransactionModel_InsertOne_Unknown');
+      handleError(
+        e,
+        this.logger,
+        `insertOne failed with following error: ${e.message}`,
+        'EXC_Wallet_TransactionModel_InsertOne_Unknown',
+      );
     }
   }
 }

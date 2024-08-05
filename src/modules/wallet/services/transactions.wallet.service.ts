@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TransactionModel } from '../models/transaction.model';
+import { handleError } from '../../../exceptions/microservice.excepction';
 
 @Injectable()
 export class TransactionsWalletService {
+  private readonly logger = new Logger(TransactionsWalletService.name);
+
   constructor(private readonly transactionModel: TransactionModel) {}
   public async walletBalance(user_id: number): Promise<number> {
     try {
@@ -10,8 +13,12 @@ export class TransactionsWalletService {
         await this.transactionModel.findLatestByUserId(user_id);
       return latestTransaction?.balance || 0;
     } catch (e) {
-      //Todo
-      // Handle Error
+      handleError(
+        e,
+        this.logger,
+        `Getting walletBalance failed with following error: ${e.message}`,
+        'EXC_Wallet_TransactionsWalletService_WalletBalance_Unknown',
+      );
     }
   }
 
@@ -26,10 +33,18 @@ export class TransactionsWalletService {
         user_id,
         amount,
       );
+
+      this.logger.log(
+        `transaction added -> reference_id: ${addedTransaction.reference_id} | amount: ${addedTransaction.amount} | balance: ${addedTransaction.balance} | created_at: ${addedTransaction.created_at}`,
+      );
       return addedTransaction.reference_id;
     } catch (e) {
-      //Todo
-      // Handle Error
+      handleError(
+        e,
+        this.logger,
+        `Adding transaction failed with following message: ${e.message}`,
+        'EXC_Wallet_TransactionsWalletService_AddOrSubtractMoney_Unknown',
+      );
     }
   }
 }
